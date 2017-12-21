@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'tb/style.css' %}" media="screen" title="no title"  charset="utf-8">  
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <title>Travel dashboard</title>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light" styles="display=inline">
+            <a class="navbar-brand" >Welcome {{user.first_name}}!</a>
+            <div>
+                <a style="margin-left: 840px" href="/logout" type="button" class="btn btn-link">Logout</a>
+            </div>
+        </nav>
+        <div>
+            <h2 style="margin-top: 65px">Your trip schedule:</h2>
+            <div class="container-fluid">
+                <table class="table table-striped">
+                    <thead>
+                        <td>Destination</td>
+                        <td>Travel Start Date</td>
+                        <td>Travel End Date</td>
+                        <td>Plan</td>
+                    </thead>
+                    <tbody> 
+                        {% for trip in joined_trip %} 
+                            <tr>
+                                <td>{{trip.destination}}</td>
+                                <td>{{trip.dateFrom}}</td>
+                                <td>{{trip.dateTo}}</td>
+                                <td>{{trip.desc}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div>
+            <h2 style="margin-top: 65px">Other users travel plan:</h2>
+            <div class="container-fluid">
+                <table class="table table-striped">
+                    <thead>
+                        <td>Name</td>
+                        <td>Destination</td>
+                        <td>Travel Start Date</td>
+                        <td>Travel End Date</td>
+                        <td>Do you want to join?</td>
+                    </thead>
+                    <tbody>
+                        {% for trip in other_trip %}
+                            <tr>
+                                <td>{{trip.added_by.first_name}} {{trip.added_by.last_name}}</td>
+                                <td>{{trip.destination}}</td>
+                                <td>{{trip.dateFrom}}</td>
+                                <td>{{trip.dateTo}}</td>
+                                <td>
+                                    <form action='/join/{{trip.id}}' method='post'>
+                                        {% csrf_token %}
+                                        <input type="hidden" name="user" value="{{user.id}}">
+                                        <input type='submit' value='Join'/>
+                                    </form>
+                                </td>
+                            </tr>
+                            
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <form action='/buttonADD' method='post'>
+                    {% csrf_token %}
+                    <input type="hidden" name="user" value="{{user.id}}">
+                    <input style="margin-left: 460px; margin-top: 50px;" type='submit' value='Add New Travel Plan'/>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+</body>
+</html>
